@@ -1,7 +1,7 @@
 
 /**
  * Clase Libro que representa un libro con sus atributos y métodos para gestionar su disponibilidad
- * @author Jaime Garcia y Jean del Pozo
+ * @author Jaime García González y Jean del Pozo Gómez
  *
  */
 public class Libro {

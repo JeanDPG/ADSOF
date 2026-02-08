@@ -7,7 +7,7 @@ import java.util.Map;
  * Clase Biblioteca que contiene un HashMap con el genero como clave,
  * una lista de libros como valor y funciones asociadas
  * 
- * @author Jaime Garcia y Jean del Pozo
+ * @author Jaime García González y Jean del Pozo Gómez
  *
  */
 public class Biblioteca {

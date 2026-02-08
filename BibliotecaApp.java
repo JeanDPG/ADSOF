@@ -3,7 +3,7 @@ import java.util.List;
 
 /**
  * Clase BibliotecaApp que contiene el main para probar las funciones de libros
- * @author Jaime Garcia y Jean del Pozo
+ * @author Jaime García González y Jean del Pozo Gómez
  *
  */
 public class BibliotecaApp {
