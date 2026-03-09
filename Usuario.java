@@ -1,8 +1,6 @@
-package redsocial;
+package redSocial;
 
-import java.util.Date;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class Usuario {
 
@@ -23,10 +21,10 @@ public class Usuario {
     }
 
     public boolean addEnlace(Enlace e) {
-        if (e.getUsuarioOrigen().equalsIgnoreCase(this.nombre) &&
-                !(e.getUsuarioDestino().equalsIgnoreCase(this.nombre))) {
+        if (e.getUsuarioOrigen().equals(this) &&
+                !(e.getUsuarioDestino().equals(this))) {
             for (Map.Entry<Date, Enlace> entrada : enlacesSalientes.entrySet()) {
-                if (entrada.getValue().getUsuarioDestino().equalsIgnoreCase(e.getUsuarioDestino())) {
+                if (entrada.getValue().getUsuarioDestino().equals(e.getUsuarioDestino())) {
                     return false;
                 }
             }
@@ -36,18 +34,44 @@ public class Usuario {
         return false;
     }
 
-    public boolean addEnlace(String usuarioDestino, int coste) {
-        if (usuarioDestino.equalsIgnoreCase(this.nombre)){
+    public boolean addEnlace(Usuario usuarioDestino, int coste) {
+        if (!(usuarioDestino.equals(this))){
             for (Map.Entry<Date, Enlace> entrada : enlacesSalientes.entrySet()) {
-                if (entrada.getValue().getUsuarioDestino().equalsIgnoreCase(usuarioDestino)) {
+                if (entrada.getValue().getUsuarioDestino().equals(usuarioDestino)) {
                     return false;
                 }
             }
-            this.enlacesSalientes.put(new Date(),new Enlace(this.nombre,usuarioDestino,coste));
+            this.enlacesSalientes.put(new Date(),new Enlace(this,usuarioDestino,coste));
             return true;
         }
 
         return false;
+    }
+    public Enlace getEnlace(Usuario usuarioDestino) {
+
+        for (Enlace e : enlacesSalientes.values()) {
+            if (e.getUsuarioDestino().equals(usuarioDestino)) {
+                return e;
+            }
+        }
+
+        return null;
+    }
+    public Enlace getEnlace(int i) {
+        if (i < 0 || i >= enlacesSalientes.size()) {
+            return null;
+        }
+        int contador = 0;
+        for (Enlace e : enlacesSalientes.values()) {
+            if (contador == i) {
+                return e;
+            }
+            contador++;
+        }
+        return null;
+    }
+    public int getNumEnlaces() {
+        return enlacesSalientes.size();
     }
 
     public String getNombre() {
@@ -78,13 +102,26 @@ public class Usuario {
 
     @Override
     public String toString() {
-        return "Usuario{" +
-                "nombre='" + nombre + '\'' +
-                ", capacidadAmp=" + capacidadAmp +
-                ", enlacesSalientes=" + enlacesSalientes +
-                '}';
+
+        StringBuilder sb = new StringBuilder();
+
+        sb.append("@").append(nombre)
+          .append("(").append(capacidadAmp).append(") [");
+
+        boolean primero = true;
+
+        for (Enlace e : enlacesSalientes.values()) {
+
+            if (!primero) {
+                sb.append(", ");
+            }
+
+            sb.append(e.toString());
+            primero = false;
+        }
+
+        sb.append("]");
+
+        return sb.toString();
     }
-}
-
-
 }
