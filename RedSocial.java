@@ -6,18 +6,20 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class RedSocial {
 
-    private HashMap<String,Usuario> usuarios = new HashMap<>();
-    private List<Enlace> enlaces;
-    private Mensaje mensajeInicial;
-    private List<Usuario> caminoUsuarios;
+    private Map<String,Usuario> usuarios;
+    private List<Enlace> colaEnlaces;
+    private Map<Mensaje,List<Usuario>> mensajes;
+
 
 
     public RedSocial(String fusuarios, String fenlaces, String fmensaje) throws IOException {
-        this.enlaces = new ArrayList<>();
-        this.caminoUsuarios = new ArrayList<>();
+        this.usuarios = new HashMap<>();
+        this.colaEnlaces = new ArrayList<>();
+        this.mensajes = new HashMap<>();
         readFromFiles(fusuarios, fenlaces, fmensaje);
 
     }
@@ -27,26 +29,24 @@ public class RedSocial {
                 getEnlaceFromFile(fenlaces) &&
                 getMensajeFromFile(fmensaje);
 
-        return exito && ejecutarDifusion(this.mensajeInicial, this.caminoUsuarios);
+        return exito && ejecutarDifusion(this.mensajes);
 
     }
 
-    public boolean ejecutarDifusion(Mensaje mensajeInicial, List<Usuario> caminoUsuarios) {
-        Enlace enlace;
-        for (int i = 0; i < caminoUsuarios.size() - 1; i++) {
-            //System.out.println(caminoUsuarios.size());
-            String usuarioOrigen = caminoUsuarios.get(i).getNombre();
-            String usuarioDestino = caminoUsuarios.get(i + 1).getNombre();
-            if((enlace = enlaceExiste(usuarioOrigen,usuarioDestino)) == null) return false;
-            mensajeInicial.difunde(enlace);
+    public boolean ejecutarDifusion(Map<Mensaje, List<Usuario>> mensajes) {
+        for (Map.Entry<Mensaje, List<Usuario>> entrada : mensajes.entrySet()) {
 
-            System.out.println(mensajeInicial);
+            Mensaje mensajeActual = entrada.getKey();
+            List<Usuario> usuarios = entrada.getValue();
+            List<Usuario> caminoUsuarios = entrada.getValue();
+            mensajeActual.difunde(usuarios.toArray(new Usuario[0]));
         }
         return true;
+
     }
 
     public Enlace enlaceExiste(String usuarioOrigen, String usuarioDestino) {
-        for(Enlace enlace: this.enlaces) {
+        for(Enlace enlace: this.colaEnlaces) {
             if (enlace.getUsuarioOrigen().getNombre().equalsIgnoreCase(usuarioOrigen) && enlace.getUsuarioDestino().getNombre().equalsIgnoreCase(usuarioDestino)) {
                 return enlace;
             }
@@ -55,7 +55,18 @@ public class RedSocial {
     }
 
 
+    public void crearUsuario(String nombre, int capacidad){
+        this.usuarios.put(nombre,new Usuario(nombre, capacidad));
+    }
 
+    public void crearEnlace(String uOrigen, String uDestino, int coste){
+        this.colaEnlaces.add(new Enlace(this.usuarios.get(uOrigen) , this.usuarios.get(uDestino), coste));
+    }
+
+    public void crearMensaje(String contenido, int alcanceDisponible, Usuario uOrigin, List<Usuario> usuarios){
+        Mensaje mensaje = new Mensaje(contenido, alcanceDisponible, uOrigin);
+        this.mensajes.put(mensaje, usuarios);
+    }
 
     public boolean getUsuarioFromFile(String path) throws IOException {
         HashMap<String,Usuario> users = new HashMap();
@@ -97,7 +108,7 @@ public class RedSocial {
                         Usuario userOrigen = this.usuarios.get(origen);
                         Usuario userDestino = this.usuarios.get(destino);
                         Enlace enlace = new Enlace(userOrigen, userDestino, coste);
-                        this.enlaces.add(enlace);
+                        this.colaEnlaces.add(enlace);
                         this.usuarios.get(origen).addEnlace(enlace);
                     }
                 }
@@ -107,34 +118,39 @@ public class RedSocial {
 
 
     public boolean getMensajeFromFile(String path) throws IOException {
-        List<Usuario> internautas = new ArrayList();
         BufferedReader br = new BufferedReader(new FileReader(path));
-            String linea;
-            Mensaje mensaje = null;
-            // LEER LA PRIMERA FILA
-            linea = br.readLine();
-            if (linea != null && !linea.trim().isEmpty()) {
-                String[] cabecera = linea.trim().split(" ");
+        String linea;
+        Mensaje mensajeActual = null;
+        List<Usuario> internautas = null;
+        // Si la linea devuelve null, es EOF
+        while ((linea = br.readLine()) != null) {
+            linea = linea.trim();
+            //Una linea vacia no devulve null, sino "" (un String de longitud 0)
+            if (linea.isEmpty()) continue;
 
-                String texto = cabecera[0];
-                int alcanceInicial = Integer.parseInt(cabecera[1]);
-                String usuarioOrigen = cabecera[2];
-                // Se utiliza this.usuarios.get() para verificar que el usuario existe en el hashmap de usuarios
-                Usuario user = this.usuarios.get(usuarioOrigen);
-                mensaje = new Mensaje(texto,alcanceInicial,user);
-                internautas.add(user);
-            }
-            this.mensajeInicial = mensaje;
+            if (linea.startsWith("\"")) {
+                // Guardar el anterior antes de empezar el nuevo
+                if (mensajeActual != null) this.mensajes.put(mensajeActual, internautas);
 
-            //LEER EL RESTO DE FILAS
-            while ((linea = br.readLine()) != null) {
-                linea = linea.trim();
-                if (!linea.isEmpty()) {
-                    internautas.add(this.usuarios.get(linea));
-                }
+                // Procesar cabecera "HOLA" 10 ana
+                String[] partes = linea.split("\"");
+                String[] resto = partes[2].trim().split(" ");
+
+                Usuario origen = this.usuarios.get(resto[1]);
+                mensajeActual = new Mensaje(partes[1], Integer.parseInt(resto[0]), origen);
+
+                internautas = new ArrayList<>();
+                internautas.add(origen);
+            } else {
+                // Es un usuario de la lista
+                internautas.add(this.usuarios.get(linea));
             }
-            this.caminoUsuarios = internautas;
-    return true;
+        }
+        // Guardar el último que quedó en el bucle
+        if (mensajeActual != null) this.mensajes.put(mensajeActual, internautas);
+
+        br.close();
+        return true;
     }
 
 
