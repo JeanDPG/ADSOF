@@ -2,10 +2,9 @@ package redSocial;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class Main {
+public class MainPruebasApartado6 {
     public static void main(String[] args)  {
 
 
@@ -22,56 +21,80 @@ public class Main {
             m.difunde(carmen.getEnlace(luis));
             System.out.println(m);      // en @luis con alcance 13 = 19 - 11 + 5
             */
-        //-----------    PRUEBA RED SOCIAL FACHADA    -------------
 
-        RedSocialFachada s = new RedSocialFachada();
+
+        //-----------    PRUEBA RED SOCIAL   -------------
+
+        System.out.println("PRUEBA RED SOCIAL");
+      
+        try {
+            RedSocial rs = new RedSocial("data/USUARIOS.txt", "data/ENLACES.txt", "data/MENSAJE.txt");
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
+
+        //-----------    PRUEBA RED SOCIAL FACHADA    -------------
+        System.out.println();
+        System.out.println("PRUEBA RED SOCIAL FACHADA");
+
+        RedSocialFachada rdf = new RedSocialFachada();
 
         // 1. Usuarios
-        s.crearUsuario("Ana", 3, Exposicion.MEDIA);
-        s.crearUsuario("Luis", 5,  Exposicion.BAJA);
-        s.crearUsuarioInteresado("Laura", 2,  Exposicion.ALTA);
-        s.crearUsuario("Quique", 2,  Exposicion.MEDIA);
-        s.crearUsuario("Jean", 2, Exposicion.ALTA);
+        rdf.crearUsuario("Ana", 3, Exposicion.MEDIA);
+        rdf.crearUsuario("Luis", 4,  Exposicion.MEDIA);
+        rdf.crearUsuarioInteresado("Laura", 2,  Exposicion.MEDIA);
+        rdf.crearUsuario("Quique", 2,  Exposicion.MEDIA);
+        rdf.crearUsuario("Jean", 1, Exposicion.MEDIA);
+        rdf.crearUsuario("Daniel", 2,  Exposicion.MEDIA);
+        rdf.crearUsuario("Maria", 5, Exposicion.MEDIA);
 
         //2. Enlaces
-        s.crearEnlace("Ana", "Luis", 10);
-        s.crearEnlace("Luis", "Laura", 4);
-        s.crearEnlace("Laura", "Quique", 3);
-        s.crearEnlace("Quique", "Jean", 6);
-        s.crearEnlace("Laura", "Jean", 8);
+        rdf.crearEnlace("Ana", "Luis", 10);
+        rdf.crearEnlace("Luis", "Laura", 4);
+        rdf.crearEnlace("Luis", "Jean", 5);
+        rdf.crearEnlace("Laura", "Quique", 3, 10);
+        rdf.crearEnlace("Quique", "Jean", 6);
+        rdf.crearEnlace("Laura", "Jean", 8);
+        rdf.crearEnlace("Quique", "Daniel", 9);
+        rdf.crearEnlace("Jean", "Daniel", 6);
+        rdf.crearEnlace("Daniel", "Maria", 5);
 
-        // 3. Mensaje
-        Usuario userAna = s.getUsuarios().get("Ana");
-        Usuario userLuis = s.getUsuarios().get("Luis");
-        Usuario userLaura = s.getUsuarios().get("Laura");
-        Usuario userQuique = s.getUsuarios().get("Quique");
-        Usuario userJean = s.getUsuarios().get("Jean");
 
-        // Mensaje 1: De Ana para una lista
+        // 3. Recoger usuarios del diccionario
+        Usuario userAna = rdf.getUsuarios().get("Ana");
+        Usuario userLuis = rdf.getUsuarios().get("Luis");
+        Usuario userLaura = rdf.getUsuarios().get("Laura");
+        Usuario userQuique = rdf.getUsuarios().get("Quique");
+        Usuario userJean = rdf.getUsuarios().get("Jean");
+        Usuario userDaniel = rdf.getUsuarios().get("Daniel");
+        Usuario userMaria = rdf.getUsuarios().get("Maria");
+
+        // Mensaje 1: Normal
         List<Usuario> receptores1 = new ArrayList();
         receptores1.add(userLuis);
         receptores1.add(userLaura);
         receptores1.add(userQuique);
         receptores1.add(userJean);
-        //s.crearMensaje("Hola!", 22, userAna, receptores1);
+        rdf.crearMensaje("Hola!", 22, userAna, receptores1);
 
-        // Mensaje 2: De Ana para una lista
+        // Mensaje 2: MensajeControlado
         List<Usuario> receptores2 = new ArrayList();
         receptores2.add(userLuis);
-        receptores2.add(userLaura);
-        receptores2.add(userQuique);
         receptores2.add(userJean);
-        s.crearMensaje("Hola!", 22, userAna, receptores2, 25);
+        receptores2.add(userDaniel);
+        receptores2.add(userMaria);
+        rdf.crearMensaje("Hola2!", 20, userAna, receptores2, 55);
 
         try {
-            s.escrituraUsuarios(s.getUsuarios());
-            s.escrituraEnlaces(s.getColaEnlaces());
-            s.escrituraMensajes(s.getMensajes());
+            rdf.escrituraUsuarios(rdf.getUsuarios());
+            rdf.escrituraEnlaces(rdf.getColaEnlaces());
+            rdf.escrituraMensajes(rdf.getMensajes());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
-        s.ejecutarDifusion(s.getMensajes());
+        rdf.ejecutarDifusion(rdf.getMensajes());
 
 
 
