@@ -10,18 +10,30 @@ import java.util.Map;
 
 public class RedSocial {
 
-    private Map<String,Usuario> usuarios;
-    private List<Enlace> colaEnlaces;
-    private Map<Mensaje,List<Usuario>> mensajes;
+    private Map<String,Usuario> usuarios =  new HashMap<>();
+    private List<Enlace> colaEnlaces = new ArrayList<>();
+    private Map<Mensaje,List<Usuario>> mensajes = new HashMap<>();
 
+    public RedSocial(){
 
+    }
 
     public RedSocial(String fusuarios, String fenlaces, String fmensaje) throws IOException {
-        this.usuarios = new HashMap<>();
-        this.colaEnlaces = new ArrayList<>();
-        this.mensajes = new HashMap<>();
+
         readFromFiles(fusuarios, fenlaces, fmensaje);
 
+    }
+
+    public Map<String, Usuario> getUsuarios() {
+        return usuarios;
+    }
+
+    public List<Enlace> getColaEnlaces() {
+        return colaEnlaces;
+    }
+
+    public Map<Mensaje, List<Usuario>> getMensajes() {
+        return mensajes;
     }
 
     public boolean readFromFiles(String fusuarios, String fenlaces, String fmensaje) throws IOException {
@@ -38,8 +50,7 @@ public class RedSocial {
 
             Mensaje mensajeActual = entrada.getKey();
             List<Usuario> usuarios = entrada.getValue();
-            List<Usuario> caminoUsuarios = entrada.getValue();
-            mensajeActual.difunde(usuarios.toArray(new Usuario[0]));
+            if(!mensajeActual.difunde(usuarios.toArray(new Usuario[0]))) return false;
         }
         return true;
 
@@ -55,18 +66,7 @@ public class RedSocial {
     }
 
 
-    public void crearUsuario(String nombre, int capacidad){
-        this.usuarios.put(nombre,new Usuario(nombre, capacidad));
-    }
-
-    public void crearEnlace(String uOrigen, String uDestino, int coste){
-        this.colaEnlaces.add(new Enlace(this.usuarios.get(uOrigen) , this.usuarios.get(uDestino), coste));
-    }
-
-    public void crearMensaje(String contenido, int alcanceDisponible, Usuario uOrigin, List<Usuario> usuarios){
-        Mensaje mensaje = new Mensaje(contenido, alcanceDisponible, uOrigin);
-        this.mensajes.put(mensaje, usuarios);
-    }
+    
 
     public boolean getUsuarioFromFile(String path) throws IOException {
         HashMap<String,Usuario> users = new HashMap();

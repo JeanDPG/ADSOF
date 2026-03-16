@@ -65,14 +65,19 @@ public class Mensaje {
      * @return true si la difusión se realizó con éxito, false en caso contrario.
      */
     public boolean difunde(Enlace e) {
-        if (e != null && e.getUsuarioOrigen().equals(usuarioActual) && puedeDifundirPor(e) && aceptadoPor(e.getUsuarioDestino())) {
 
+        if (e != null && puedeDifundirPor(e) && e.getUsuarioOrigen().equals(usuarioActual) && aceptadoPor(e.getUsuarioDestino())) {
+           if(e instanceof EnlaceSeñuelo){
+               if(((EnlaceSeñuelo) e).getProbRetorno() > generarNumeroAleatorio()) {
+                   this.usuarioActual = e.getUsuarioOrigen();
+                   System.out.println(this);
+                   return true;
+               }
+           }
             Usuario destino = e.getUsuarioDestino();
             Usuario origen = e.getUsuarioOrigen();
             alcanceDisponible = alcanceDisponible - e.costeReal();
-            
-            if (alcanceDisponible < 1) return false;
-            
+            if(alcanceDisponible < 1) return false;
             alcanceDisponible = alcanceDisponible + destino.getCapacidadAmp();
             origen.getHistorialMensajes().add(this);
             origen.ajustarExposicion(this);
@@ -83,6 +88,11 @@ public class Mensaje {
         }
 
         return false;
+    }
+    
+  
+    public int generarNumeroAleatorio() {
+        return ThreadLocalRandom.current().nextInt(1, 101);
     }
 
     /**
