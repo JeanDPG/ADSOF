@@ -56,16 +56,17 @@ public class RedSocial {
 
     }
 
-//    public Enlace enlaceExiste(String usuarioOrigen, String usuarioDestino) {
-//        for(Enlace enlace: this.colaEnlaces) {
-//            if (enlace.getUsuarioOrigen().getNombre().equalsIgnoreCase(usuarioOrigen) && enlace.getUsuarioDestino().getNombre().equalsIgnoreCase(usuarioDestino)) {
-//                return enlace;
-//            }
-//        }
-//        return null;
-//    }
+    public Enlace enlaceExiste(String usuarioOrigen, String usuarioDestino) {
+        for(Enlace enlace: this.colaEnlaces) {
+            if (enlace.getUsuarioOrigen().getNombre().equalsIgnoreCase(usuarioOrigen) && enlace.getUsuarioDestino().getNombre().equalsIgnoreCase(usuarioDestino)) {
+                return enlace;
+            }
+        }
+        return null;
+    }
 
 
+    
 
     public boolean getUsuarioFromFile(String path) throws IOException {
         HashMap<String,Usuario> users = new HashMap();
