@@ -1,4 +1,4 @@
-package estacionMeteorologica;
+import Sensores.*;
 
 import java.time.LocalDateTime;
 
