@@ -1,4 +1,4 @@
-package estacionMeteorologica;
+
 
 public enum TipoDeAlerta {
     CAMBIO_BRUSCO("Cambio brusco"),
