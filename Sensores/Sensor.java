@@ -16,45 +16,65 @@ public abstract class Sensor {
     private double valorUltimaLectura;
     private LocalDate fechaDeInstalacion;
     private LocalDateTime fechaUltimaCalibracion;
-    private Duration tiempoCaducidadCalibracion;
+    private LocalDateTime fechaCaducidadCalibracion;
+    private long duracionCalibracionDias;
     private boolean calibradoPorRango;
+    private double valorLecturaAnterior;
+    private double porcentajeCambioBrusco;
+    private boolean medicionDetenida;
     private EstrategiaSimulacion estrategia;
 
     // Constructor base (privado) - inicializa todos los campos
-    private Sensor(TipoSensor tipo, String id, double offset, long horasCaducidad,
+    private Sensor(TipoSensor tipo, String id, double offset, long duracionCalibracion,
                    UnidadDeMedida unidad, EstrategiaSimulacion estrategia) {
         this.tipo = tipo;
         this.id = id;
         this.offset = offset;
-        this.tiempoCaducidadCalibracion = Duration.ofHours(horasCaducidad);
+        this.duracionCalibracion = duracionCalibracion;
+        this.fechaCaducidadCalibracion = this.fechaUltimaCalibracion.plusDays(this.duracionCalibracionDias);
         this.unidadDeLectura = unidad;
         this.estrategia = estrategia;
         this.fechaDeInstalacion = LocalDate.now();
         this.fechaUltimaCalibracion = LocalDateTime.now();
         this.calibradoPorRango = true;
+        this.medicionDetenida= false;
+        this.porcentajeCambioBrusco = 0.5;
     }
 
-    // Constructor 1: Parámetros básicos sin unidad ni estrategia
-    public Sensor(TipoSensor tipo, String id, double offset, long horasCaducidad) {
-        this(tipo, id, offset, horasCaducidad, null, null);
+    // Constructor A: El más básico (Tipo, ID, Offset). Pone 365 días por defecto.
+    public Sensor(TipoSensor tipo, String id, double offset) {
+        this(tipo, id, offset, 365, null, null);
     }
 
-    // Constructor 2: Con estrategia de simulación
-    public Sensor(TipoSensor tipo, String id, double offset, long horasCaducidad,
-                  EstrategiaSimulacion estrategia) {
-        this(tipo, id, offset, horasCaducidad, null, estrategia);
+    // Constructor B: Con duración específica de calibración (en días)
+    public Sensor(TipoSensor tipo, String id, double offset, long duracionDias) {
+        this(tipo, id, offset, duracionDias, null, null);
     }
 
-    // Constructor 3: Con unidad de medida
-    public Sensor(TipoSensor tipo, String id, UnidadDeMedida unidad, double offset,
-                  long horasCaducidad) {
-        this(tipo, id, offset, horasCaducidad, unidad, null);
+    // Constructor C: Con estrategia de simulación (usa 365 días por defecto)
+    public Sensor(TipoSensor tipo, String id, double offset, EstrategiaSimulacion estrategia) {
+        this(tipo, id, offset, 365, null, estrategia);
     }
 
-    // Constructor 4: Con unidad de medida y estrategia
-    public Sensor(TipoSensor tipo, String id, UnidadDeMedida unidad, double offset,
-                  long horasCaducidad, EstrategiaSimulacion estrategia) {
-        this(tipo, id, offset, horasCaducidad, unidad, estrategia);
+    // Constructor D: Con estrategia y duración específica
+    public Sensor(TipoSensor tipo, String id, double offset, long duracionDias, EstrategiaSimulacion estrategia) {
+        this(tipo, id, offset, duracionDias, null, estrategia);
+    }
+
+    // Constructor E: Con unidad de medida (usa 365 días por defecto)
+    public Sensor(TipoSensor tipo, String id, UnidadDeMedida unidad, double offset) {
+        this(tipo, id, offset, 365, unidad, null);
+    }
+
+    // Constructor F: Con unidad de medida y duración específica
+    public Sensor(TipoSensor tipo, String id, UnidadDeMedida unidad, double offset, long duracionDias) {
+        this(tipo, id, offset, duracionDias, unidad, null);
+    }
+
+    // Constructor G: El completo (Unidad, Offset, Duración y Estrategia)
+    public Sensor(TipoSensor tipo, String id, UnidadDeMedida unidad, double offset, 
+                  long duracionDias, EstrategiaSimulacion estrategia) {
+        this(tipo, id, offset, duracionDias, unidad, estrategia);
     }
 
 
@@ -104,6 +124,31 @@ public abstract class Sensor {
         this.estrategia = estrategia;
     }
 
+    public void calibrar(double nuevoOffset) {
+    this.offset = nuevoOffset;
+    
+    this.fechaUltimaCalibracion = LocalDateTime.now();
+    
+    this.fechaCaducidadCalibracion = this.fechaUltimaCalibracion.plusDays(this.duracionCalibracionDias);
+    
+    this.calibradoPorRango = true; 
+    this.medicionDetenida = false; 
+    }
+
+
+    public void calibrar(double nuevoOffset, long nuevosDiasDuracion) {
+        this.duracionCalibracionDias = nuevosDiasDuracion;
+        this.calibrar(nuevoOffset);
+    }
+    
+    public boolean estaCalibrado() {
+        boolean noHaCaducado = LocalDateTime.now().isBefore(this.fechaCaducidadCalibracion);
+        return noHaCaducado && this.calibradoPorRango;
+    }
+    
+    public void setMedicionDetenida(boolean detener) {
+        this.medicionDetenida = detener;
+    }
 
     /**
      * Devuelve una representaci n en cadena del sensor.
