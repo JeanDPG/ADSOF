@@ -30,7 +30,7 @@ public abstract class Sensor {
         this.tipo = tipo;
         this.id = id;
         this.offset = offset;
-        this.duracionCalibracion = duracionCalibracion;
+        this.duracionCalibracionDias = duracionCalibracion;
         this.fechaCaducidadCalibracion = this.fechaUltimaCalibracion.plusDays(this.duracionCalibracionDias);
         this.unidadDeLectura = unidad;
         this.estrategia = estrategia;
@@ -105,10 +105,11 @@ public abstract class Sensor {
      * @return true si el sensor est  correctamente calibrado, false en caso contrario.
      */
     public boolean estaCorrectamenteCalibrado() {
-        if (!calibradoPorRango) return false;
-        Duration transcurrido = Duration.between(fechaUltimaCalibracion, LocalDateTime.now());
-        return transcurrido.compareTo(tiempoCaducidadCalibracion) <= 0;
+    if (!this.calibradoPorRango) {
+        return false;
     }
+    return LocalDateTime.now().isBefore(this.fechaCaducidadCalibracion);
+}
 
     public TipoSensor getTipo() { return tipo; }
 
