@@ -12,12 +12,14 @@ public class EstacionMeteorologica {
     private double latitud;
     private double longitud;
     private List<Sensor> sensores;
+	private List<Alerta> historicoAlertas;
 
     public EstacionMeteorologica(String nombre, double latitud, double longitud) {
         this.nombre = nombre;
         this.latitud = latitud;
         this.longitud = longitud;
         this.sensores = new ArrayList<>();
+		this.historicoAlertas = new ArrayList<>();
     }
 
     /**
@@ -79,6 +81,26 @@ public class EstacionMeteorologica {
         System.out.println(sensores.toString());
     }
 
+	public void calibrarSensor(String id, double nuevoOffset) {
+	    Sensor s = recuperarSensorPorId(id);
+	    if (s != null) {
+	        s.calibrar(nuevoOffset);
+	        s.setMedicionDetenida(false);
+	        for (int i = historicoAlertas.size() - 1; i >= 0; i--) {
+	            Alerta alertaActual = historicoAlertas.get(i);
+	            if (alertaActual.getIdSensor().equals(id)) {
+	                historicoAlertas.remove(i);
+	            }
+	        }
+	    }
+	}
+
+    public void mostrarAlertas() {
+        System.out.println("Alertas activas: " + historicoAlertas.size());
+        for (Alerta a : historicoAlertas) {
+            System.out.println("- " + a.toString());
+        }
+    }
 	/*
     public void configurarLecturaPeriodica(int periodoSegundos, int maxLecturas) {
 
