@@ -1,4 +1,4 @@
-
+import Sensores.*;
 import java.time.LocalDateTime;
 public class CambioBruscoException extends AlertaException {
 
