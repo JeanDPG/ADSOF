@@ -19,7 +19,7 @@ public class Procesador {
     /** Inicializa el procesador con histórico vacío y conversor identidad por defecto. */
     public Procesador(){
         this.historico = new HashMap<>();
-        this.conversor = new ConversorIdentidad("sin unidad");
+        this.conversor = new ConversorIdentidad("identidad");
     }
 
     /** Devuelve el histórico de valores indexado por fecha. */
@@ -54,7 +54,8 @@ public class Procesador {
 
     /** Guarda un valor en el histórico y recalcula las métricas agregadas. */
     public void setValorHistorico(Date date, Double valor){
-        this.historico.put(date,valor);
+        double valorConvertido = this.conversor != null ? this.conversor.convertir(valor) : valor;
+        this.historico.put(date, valorConvertido);
         this.min = Collections.min(this.historico.values());
         this.max = Collections.max(this.historico.values());
         this.average = average(this.historico);
@@ -82,13 +83,13 @@ public class Procesador {
             if (!valoresHistorico.isEmpty()) {
                 valoresHistorico.append(", ");
             }
-            valoresHistorico.append(entry.getValue());
+            valoresHistorico.append(String.format("%.3f", entry.getValue()));
         }
 
         return descripcionConversor
                 + " [" + valoresHistorico + "] "
-                + " MIN: " + this.getMin()
-                + " MAX: " + this.getMax()
-                + " AVG: " + this.getAverage();
+                + " MIN: " + String.format("%.3f", this.getMin())
+                + " MAX: " + String.format("%.3f", this.getMax())
+                + " AVG: " + String.format("%.3f", this.getAverage());
     }
 }
