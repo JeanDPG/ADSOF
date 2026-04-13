@@ -36,34 +36,4 @@ public class SensorPresion extends Sensor {
                 estrategia);
     }
 
-    @Override
-    public boolean validarRango(double valor) {
-        double min = minimoPorUnidad(getUnidadDeLectura());
-        double max = maximoPorUnidad(getUnidadDeLectura());
-        return valor >= min && valor <= max;
-    }
-
-    private static double minimoPorUnidad(UnidadDeMedida unidad) {
-        switch (unidad) {
-            case HECTOPASCAL:
-            case MILIBAR:
-                return 300.0;
-            case PASCAL:
-                return 30000.0;
-            default:
-                return 300.0;
-        }
-    }
-
-    private static double maximoPorUnidad(UnidadDeMedida unidad) {
-        switch (unidad) {
-            case HECTOPASCAL:
-            case MILIBAR:
-                return 1100.0;
-            case PASCAL:
-                return 110000.0;
-            default:
-                return 1100.0;
-        }
-    }
 }

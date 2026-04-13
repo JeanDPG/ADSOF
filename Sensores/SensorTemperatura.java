@@ -34,36 +34,5 @@ public class SensorTemperatura extends Sensor {
                 "TEMP-" + String.format("%04d", contador++), unidad, offset, horasCaducidad, estrategia);
     }
 
-    @Override
-    public boolean validarRango(double valor) {
-        double min = minimoPorUnidad(getUnidadDeLectura());
-        double max = maximoPorUnidad(getUnidadDeLectura());
-        return valor >= min && valor <= max;
-    }
-
-    private static double minimoPorUnidad(UnidadDeMedida unidad) {
-        switch (unidad) {
-            case CELSIUS:
-                return -273.15;
-            case FAHRENHEIT:
-                return -459.67;
-            case KELVIN:
-                return 0.0;
-            default:
-                return -273.15;
-        }
-    }
-
-    private static double maximoPorUnidad(UnidadDeMedida unidad) {
-        switch (unidad) {
-            case CELSIUS:
-                return 1000.0;
-            case FAHRENHEIT:
-                return 1832.0;
-            case KELVIN:
-                return 1273.15;
-            default:
-                return 1000.0;
-        }
-    }
+    
 }

@@ -1,3 +1,4 @@
+package Excepciones;
 import Sensores.*;
 
 import java.time.LocalDateTime;

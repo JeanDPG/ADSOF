@@ -1,6 +1,6 @@
 package Sensores;
 
-
+import Excepciones.*;
 import Sensores.Estrategias.EstrategiaSimulacion;
 
 import java.time.*;
@@ -8,18 +8,16 @@ import java.time.*;
 public abstract class Sensor {
     private String id;
     private double offset;
-    private double min;
-    private double max;
     private TipoSensor tipo;
     private UnidadDeMedida unidadDeLectura;
     private LocalDateTime fechaUltimaLectura;
-    private double valorUltimaLectura;
+    private Double valorUltimaLectura;
     private LocalDate fechaDeInstalacion;
     private LocalDateTime fechaUltimaCalibracion;
     private LocalDateTime fechaCaducidadCalibracion;
     private long duracionCalibracionDias;
     private boolean calibradoPorRango;
-    private double valorLecturaAnterior;
+    private Double valorLecturaAnterior;
     private double porcentajeCambioBrusco;
     private boolean medicionDetenida;
     private EstrategiaSimulacion estrategia;
@@ -30,12 +28,13 @@ public abstract class Sensor {
         this.tipo = tipo;
         this.id = id;
         this.offset = offset;
+        this.fechaUltimaCalibracion = LocalDateTime.now();
         this.duracionCalibracionDias = duracionCalibracion;
         this.fechaCaducidadCalibracion = this.fechaUltimaCalibracion.plusDays(this.duracionCalibracionDias);
         this.unidadDeLectura = unidad;
         this.estrategia = estrategia;
         this.fechaDeInstalacion = LocalDate.now();
-        this.fechaUltimaCalibracion = LocalDateTime.now();
+        
         this.calibradoPorRango = true;
         this.medicionDetenida= false;
         this.porcentajeCambioBrusco = 0.5;
@@ -77,8 +76,16 @@ public abstract class Sensor {
         this(tipo, id, offset, duracionDias, unidad, estrategia);
     }
 
+    public static double minimoPorUnidad(UnidadDeMedida unidad) {
+        return unidad.getMin();
+    }
 
-    public abstract boolean validarRango(double valor);
+    public static double maximoPorUnidad(UnidadDeMedida unidad) {
+        return unidad.getMax();
+    }
+    public boolean validarRango(double valor){
+        return valor >= this.unidadDeLectura.getMin() && valor <= this.unidadDeLectura.getMax();
+    };
 
     /**
      * Toma una lectura del sensor y la procesa.
@@ -88,14 +95,50 @@ public abstract class Sensor {
      * no calibrado.
      * @param valorMedido el valor medido por el sensor
      */
-    public void tomarLectura(double valorMedido) {
-        double valorFinal = valorMedido - this.offset;
-        if (!validarRango(valorFinal)) {
-            this.calibradoPorRango = false;
+public double realizarLectura() throws CambioBruscoException, LecturaFueraDeRangoException, SensorSinCalibrarException {
+    if (this.medicionDetenida || !this.estaCorrectamenteCalibrado()) {
+            this.medicionDetenida = true; // Nos aseguramos de que se bloquee
+            throw new SensorSinCalibrarException(this, this.fechaCaducidadCalibracion);
         }
-        this.valorUltimaLectura = valorFinal;
-        this.fechaUltimaLectura = LocalDateTime.now();
+
+    double valorSimulado = this.estrategia.generarValorAleat();
+
+    double valorFinal = valorSimulado - this.offset;
+
+    if (valorFinal < this.unidadDeLectura.getMin() || valorFinal > this.unidadDeLectura.getMax()) {
+        this.calibradoPorRango = false;
+        this.medicionDetenida = true; 
+        throw new LecturaFueraDeRangoException(this, valorFinal);
     }
+
+    // 5. COMPROBAR CAMBIO BRUSCO (Apartado 4)
+    if (this.valorLecturaAnterior != null) {
+        // Calculamos el porcentaje real para pasárselo a tu excepción
+        double diferencia = Math.abs(valorFinal - this.valorLecturaAnterior);
+        double porcentajeReal = diferencia / Math.abs(this.valorLecturaAnterior);
+
+        if (porcentajeReal > this.porcentajeCambioBrusco) {
+            double anterior = this.valorLecturaAnterior;
+            // Actualizamos el estado antes de lanzar para "permitir seguir midiendo"
+            actualizarEstadoLectura(valorFinal); 
+            
+            // Tu constructor pide: (Sensor sensor, double anterior, double actual, double porcentaje)
+            throw new CambioBruscoException(this, anterior, valorFinal, porcentajeReal);
+        }
+    }
+
+    // 6. ACTUALIZAR ESTADO FINAL (Si todo ha ido bien)
+    actualizarEstadoLectura(valorFinal);
+    return valorFinal;
+}
+
+
+// Método auxiliar para no repetir código
+private void actualizarEstadoLectura(double valor) {
+    this.valorLecturaAnterior = valor;
+    this.valorUltimaLectura = valor;
+    this.fechaUltimaLectura = LocalDateTime.now();
+}
 
     /**
      * Comprueba si el sensor está  correctamente calibrado. Un sensor
@@ -151,6 +194,7 @@ public abstract class Sensor {
         this.medicionDetenida = detener;
     }
 
+
     /**
      * Devuelve una representaci n en cadena del sensor.
      * El formato es el siguiente: [TEMP-0001 (desde: 2023-09-01): Sensores.Sensor Temperatura (20.5ºC) ...]
@@ -161,13 +205,18 @@ public abstract class Sensor {
      *
      * @return una representaci n en cadena del sensor.
      * */
-    @Override
+     @Override
     public String toString() {
-        // Formato: [TEMP-0001 (desde: 2023-09-01): Sensores.Sensor Temperatura (20.5ºC) ...]
+        if (valorUltimaLectura == null) {
+            return String.format("[%s (desde: %s): %s (SIN LECTURAS)]",
+                    id, fechaDeInstalacion, this.getClass().getSimpleName());
+        }
+        
+        // Formato exacto del ejemplo: [TEMP-0001 (desde: 2023-09-01): Sensor Temperatura (20.5ºC) última lectura: 2026-01-15T10:30:00]
         return String.format("[%s (desde: %s): %s (%.1f%s) última lectura: %s]",
                 id, fechaDeInstalacion, this.getClass().getSimpleName(),
-                valorUltimaLectura, unidadDeLectura,
-                fechaUltimaLectura != null ? fechaUltimaLectura : "SIN LECTURAS");
+                valorUltimaLectura, unidadDeLectura.getSimbolo(),
+                fechaUltimaLectura);
     }
 
 }

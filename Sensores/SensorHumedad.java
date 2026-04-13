@@ -7,8 +7,4 @@ public class SensorHumedad extends Sensor {
         super(TipoSensor.HUMEDAD,"HUM-" + String.format("%04d", contador++), UnidadDeMedida.PORCENTAJE, offset, horasCaducidad);
     }
 
-    @Override
-    public boolean validarRango(double valor) {
-        return valor >= 0.0 && valor <= 100.0;
-    }
 }

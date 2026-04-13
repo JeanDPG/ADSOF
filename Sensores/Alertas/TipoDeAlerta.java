@@ -1,5 +1,5 @@
 
-
+package Sensores.Alertas;
 public enum TipoDeAlerta {
     CAMBIO_BRUSCO("Cambio brusco"),
     SIN_CALIBRAR("Sensor sin calibrar"),
