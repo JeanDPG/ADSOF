@@ -12,8 +12,7 @@ public interface Conversor {
     /** Encadena este conversor con otro compatible para aplicar ambas conversiones seguidas. */
     default Conversor concatenarCon(Conversor siguiente) throws UnidadIncompatibleException {
         if (!this.getUnidadDestino().equalsIgnoreCase(siguiente.getUnidadOrigen())) {
-            throw new UnidadIncompatibleException("No se puede concatenar: " +
-                    this.getUnidadDestino() + " no coincide con " + siguiente.getUnidadOrigen());
+            throw new UnidadIncompatibleException(this, siguiente);
         }
         return new ConversorCompuesto(this, siguiente);
     }

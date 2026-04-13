@@ -1,11 +1,11 @@
 package Procesadores.Conversores;
 
-public class ConversorCompuesto implements Conversor {
+ class ConversorCompuesto implements Conversor {
     private Conversor primero;
     private Conversor segundo;
 
     /** Crea un conversor que aplica dos conversiones consecutivas. */
-    public ConversorCompuesto(Conversor primero, Conversor segundo) {
+    ConversorCompuesto(Conversor primero, Conversor segundo) {
         this.primero = primero;
         this.segundo = segundo;
     }
