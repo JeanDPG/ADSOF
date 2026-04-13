@@ -1,0 +1,341 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.1">
+  <zoom_level>7</zoom_level>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>0</x>
+      <y>210</y>
+      <w>1176</w>
+      <h>518</h>
+    </coordinates>
+    <panel_attributes>sensores</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>378</x>
+      <y>252</y>
+      <w>322</w>
+      <h>252</h>
+    </coordinates>
+    <panel_attributes>/Sensor/
+--
+-id: String
+-offset: double
+-fechaUltimaLectura: LocalDateTime
+-valorUltimaLectura: Double
+-fechaDeInstalacion: LocalDate
+-fechaUltimaCalibracion: LocalDateTime
+-fechaCaducidadCalibracion: LocalDateTime
+-duracionCalibracionDias: long
+-calibradoPorRango: boolean
+-valorLecturaAnterior: Double
+-porcentajeCambioBrusco: double
+-medicionDetenida: boolean
+--
++validarRango(valor: double): boolean
++realizarLectura(): double
++calibrar(nuevoOffset: double): void
++calibrar(nuevoOffset: double, nuevosDiasDuracion: long): void
++estaCalibrado(): boolean
+bg=cyan</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>644</x>
+      <y>581</y>
+      <w>147</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>SensorTemperatura
+--
+_-contador : int _
+_-PROB_DEFECTO: double_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>287</x>
+      <y>581</y>
+      <w>147</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>SensorHumedad
+--
+_-contador : int _</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>469</x>
+      <y>581</y>
+      <w>147</w>
+      <h>49</h>
+    </coordinates>
+    <panel_attributes>SensorPresion
+--
+_-contador : int _
+_-PROB_DEFECTO: double_</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>357</x>
+      <y>497</y>
+      <w>154</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>200.0;10.0;200.0;60.0;10.0;60.0;10.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>539</x>
+      <y>497</y>
+      <w>21</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>581</x>
+      <y>497</y>
+      <w>161</w>
+      <h>98</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;-</panel_attributes>
+    <additional_attributes>10.0;10.0;10.0;60.0;210.0;60.0;210.0;120.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>805</x>
+      <y>266</y>
+      <w>105</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enum&gt;&gt;
+TipoSensor
+--
++ TEMPERATURA
++ HUMEDAD
++ PRESION
+--
+-prefijo : String
+bg=#FFFFE0
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>693</x>
+      <y>287</y>
+      <w>126</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+tipo</panel_attributes>
+    <additional_attributes>160.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>833</x>
+      <y>420</y>
+      <w>147</w>
+      <h>154</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;enum&gt;&gt;
+UnidadDeMedida
+--
++ CELSIUS
++ FAHRENHEIT
++ KELVIN
++ PORCENTAJE
++ HECTOPASCAL
++ PASCAL
++ MILIBAR
+--
+-simbolo : String
+-min : double
+-max : double
+bg=#FFFFE0
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>693</x>
+      <y>441</y>
+      <w>154</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+unidadDeLectura</panel_attributes>
+    <additional_attributes>200.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>784</x>
+      <y>511</y>
+      <w>308</w>
+      <h>119</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+_UNIDAD_DEFECTO_
+</panel_attributes>
+    <additional_attributes>280.0;10.0;420.0;10.0;420.0;140.0;10.0;140.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>532</x>
+      <y>469</y>
+      <w>630</w>
+      <h>210</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+_UNIDAD_DEFECTO_</panel_attributes>
+    <additional_attributes>640.0;10.0;880.0;10.0;880.0;280.0;10.0;280.0;10.0;230.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>112</x>
+      <y>483</y>
+      <w>147</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>SensorDuplicadoException
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>252</x>
+      <y>378</y>
+      <w>140</w>
+      <h>147</h>
+    </coordinates>
+    <panel_attributes>lt=-&gt;
+sensor
+m2=2</panel_attributes>
+    <additional_attributes>10.0;190.0;100.0;190.0;100.0;10.0;180.0;10.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>35</x>
+      <y>287</y>
+      <w>217</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;from package sensores.estrategias&gt;&gt;
+EstrategiaSimulacion
+bg=light_gray</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>245</x>
+      <y>287</y>
+      <w>147</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+estrategia</panel_attributes>
+    <additional_attributes>10.0;20.0;190.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>35</x>
+      <y>329</y>
+      <w>217</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;from package excepciones&gt;&gt;
+CambioBruscoException
+bg=light_gray</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>35</x>
+      <y>371</y>
+      <w>217</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;from package excepciones&gt;&gt;
+LecturaFueraDeRangoException
+bg=light_gray</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>35</x>
+      <y>413</y>
+      <w>217</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;from package excepciones&gt;&gt;
+SensorSinCalibrarException
+bg=light_gray</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>245</x>
+      <y>329</y>
+      <w>147</w>
+      <h>28</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;throws&gt;&gt;</panel_attributes>
+    <additional_attributes>10.0;20.0;190.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>245</x>
+      <y>343</y>
+      <w>147</w>
+      <h>56</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;throws&gt;&gt;</panel_attributes>
+    <additional_attributes>10.0;60.0;40.0;60.0;40.0;20.0;190.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>245</x>
+      <y>364</y>
+      <w>147</w>
+      <h>84</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;.
+&lt;&lt;throws&gt;&gt;</panel_attributes>
+    <additional_attributes>10.0;100.0;60.0;100.0;60.0;10.0;190.0;10.0</additional_attributes>
+  </element>
+</diagram>

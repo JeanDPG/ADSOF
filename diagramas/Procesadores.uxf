@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.1">
+  <zoom_level>5</zoom_level>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>115</x>
+      <y>255</y>
+      <w>405</w>
+      <h>135</h>
+    </coordinates>
+    <panel_attributes>procesadores</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>125</x>
+      <y>305</y>
+      <w>105</w>
+      <h>55</h>
+    </coordinates>
+    <panel_attributes>Procesador
+--
+~historico: Map&lt;Date, Double&gt;
+-min: double
+-max: double
+-average: double
+--
+</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>225</x>
+      <y>325</y>
+      <w>135</w>
+      <h>20</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;-
+Conversor</panel_attributes>
+    <additional_attributes>250.0;20.0;10.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>350</x>
+      <y>325</y>
+      <w>160</w>
+      <h>30</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;from package procesadores.conversores&gt;&gt;
+Conversor
+bg=light_gray</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>

@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<diagram program="umlet" version="15.1">
+  <zoom_level>7</zoom_level>
+  <element>
+    <id>UMLPackage</id>
+    <coordinates>
+      <x>168</x>
+      <y>224</y>
+      <w>651</w>
+      <h>259</h>
+    </coordinates>
+    <panel_attributes>estacion</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>175</x>
+      <y>266</y>
+      <w>280</w>
+      <h>175</h>
+    </coordinates>
+    <panel_attributes>EstacionMeteorologica
+--
+-nombre: String
+-latitud: double
+-longitud: double
+-fechaUltimaLecturaGlobal: LocalDateTime
+-lecturasRealizadas: int
+--
++añadirSensor(nuevoSensor: Sensor): void
++recuperarSensorPorId(id: String): Sensor
++obtenerSensoresPorTipo(tipo: TipoSensor): List&lt;Sensor&gt;
++realizarLecturaSimultanea(): void
++lecturaPeriodica(periodo: int, numLecturas: int): void
++configurarLecturaPeriodicaBucle(periodo: int, max: int): void
++calibrarSensor(id: String, nuevoOffset: double): void
++mostrarAlertas(): void</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>588</x>
+      <y>273</y>
+      <w>217</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;from package sensores&gt;&gt;
+Sensor
+bg=light_gray</panel_attributes>
+    <additional_attributes/>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>448</x>
+      <y>280</y>
+      <w>154</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;-&gt;
+sensores
+m2=*</panel_attributes>
+    <additional_attributes>10.0;20.0;200.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>Relation</id>
+    <coordinates>
+      <x>448</x>
+      <y>322</y>
+      <w>154</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>lt=&lt;&lt;&lt;&lt;&lt;-&gt;
+historicoAlertas
+m2=*</panel_attributes>
+    <additional_attributes>10.0;20.0;200.0;20.0</additional_attributes>
+  </element>
+  <element>
+    <id>UMLClass</id>
+    <coordinates>
+      <x>588</x>
+      <y>322</y>
+      <w>217</w>
+      <h>35</h>
+    </coordinates>
+    <panel_attributes>&lt;&lt;from package sensores.alertas&gt;&gt;
+Alerta
+bg=light_gray</panel_attributes>
+    <additional_attributes/>
+  </element>
+</diagram>
